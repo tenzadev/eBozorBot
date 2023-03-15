@@ -16,7 +16,7 @@ class Database:
             user=config.DB_USER,
             password=config.DB_PASS,
             host=config.DB_HOST,
-            database=config.DB_NAME,
+            database=config.DB_NAME
         )
 
     async def execute(
@@ -52,6 +52,30 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
+    async def create_table_cats(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Cats (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL UNIQUE,
+        description varchar(255) NULL,
+        image_url VARCHAR(255) NULL
+        );
+        """
+        await self.execute(sql, execute=True)
+
+    async def create_table_products(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Products (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL UNIQUE,
+        description varchar(255) NOT NULL,
+        image_url VARCHAR(255) NOT NULL,
+        price NUMERIC NOT NULL,
+        cat_id INTEGER NOT NULL
+        );
+        """
+        await self.execute(sql, execute=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join(
@@ -62,6 +86,10 @@ class Database:
     async def add_user(self, full_name, username, telegram_id):
         sql = "INSERT INTO users (full_name, username, telegram_id) VALUES($1, $2, $3) returning *"
         return await self.execute(sql, full_name, username, telegram_id, fetchrow=True)
+    
+    async def add_cat(self, title, desc, image_url):
+        sql = "INSERT INTO Cats (title, description, image_url) VALUES($1, $2, $3) returning *"
+        return await self.execute(sql, title, desc, image_url, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
