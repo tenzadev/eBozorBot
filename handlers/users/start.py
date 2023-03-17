@@ -19,5 +19,6 @@ async def bot_start(message: types.Message):
         msg = f"@{user[2]} bazaga qo'shildi.\nBazada {count} ta foydalanuvchi bor."
         await bot.send_message(chat_id=ADMINS[0], text=msg)
     # user = await db.select_user(telegram_id=message.from_user.id)
-    await bot.send_message(chat_id=ADMINS[0], text=f"@{name} bazaga oldin qo'shilgan")
+    else:
+        await bot.send_message(chat_id=ADMINS[0], text=f"@{name} bazaga oldin qo'shilgan")
     await message.answer(f"Xush kelibsiz! @{name}")
