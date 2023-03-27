@@ -2,14 +2,16 @@ from aiogram import types
 from loader import dp, db, bot
 from keyboards.inline.cart import make_cart_items
 from keyboards.default.main import make_cats_markup
+from aiogram.dispatcher import FSMContext
 
 
 @dp.message_handler(text="📥 Savat", state="*")
-async def get_cart_items(message: types.Message):
+async def get_cart_items(message: types.Message, state: FSMContext):
     user = await db.select_user(telegram_id=message.from_user.id)
     cart = await db.select_user_cart(user_id=user["id"])
     result = await make_cart_items(cart_id=cart["id"])
-    await message.answer(text=result[1], reply_markup=result[0])
+    message = await message.answer(text=result[1], reply_markup=result[0])
+    await state.update_data({"message": message, "total_price": result[2]})
 
 
 @dp.callback_query_handler(text="clear_cart", state="*")

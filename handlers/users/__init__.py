@@ -3,6 +3,7 @@ from . import help
 from . import admin
 from . import add_cat
 from . import add_product
+from . import confirm_order
 from . import cart
 from . import back
 from . import main

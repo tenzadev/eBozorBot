@@ -97,7 +97,28 @@ class Database:
         );
         """
         await self.execute(sql, execute=True)
+
+    async def create_table_order(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Orders (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL,
+        total_price NUMERIC NOT NULL,
+        paid BOOLEAN NOT NULL DEFAULT FALSE
+        );
+        """
+        await self.execute(sql, execute=True)
     
+    async def create_table_order_item(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS OrderItems (
+        id SERIAL PRIMARY KEY,
+        order_id BIGINT NOT NULL,
+        product_id BIGINT NOT NULL,
+        quantity BIGINT NOT NULL
+        );
+        """
+        await self.execute(sql, execute=True)
 
     @staticmethod
     def format_args(sql, parameters: dict):
@@ -125,6 +146,14 @@ class Database:
     async def add_cart_item(self, cart_id, product_id, quantity):
         sql = "INSERT INTO Items (cart_id, product_id, quantity) VALUES($1, $2, $3) returning *"
         return await self.execute(sql, cart_id, product_id, quantity, fetchrow=True)
+    
+    async def add_order(self, user_id, total_price):
+        sql = "INSERT INTO Orders (user_id, total_price) VALUES($1, $2) returning *"
+        return await self.execute(sql, user_id, total_price, fetchrow=True)
+
+    async def add_order_item(self, order_id, product_id, quantity):
+        sql = "INSERT INTO OrderItems (order_id, product_id, quantity) VALUES($1, $2, $3) returning *"
+        return await self.execute(sql, order_id, product_id, quantity, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
@@ -176,6 +205,14 @@ class Database:
     async def update_cart_item(self, cart_id, product_id, quantity):
         sql = "UPDATE Items SET quantity=$1 WHERE cart_id=$2 AND product_id=$3"
         return await self.execute(sql, quantity, cart_id, product_id, execute=True)
+    
+    async def update_order_price(self, order_id, price):
+        sql = "UPDATE Orders SET total_price=$1 WHERE id=$2;"
+        return await self.execute(sql, price, order_id, execute=True)
+    
+    async def update_order_paid(self, order_id, paid):
+        sql = "UPDATE Orders SET paid=$1 WHERE id=$2;"
+        return await self.execute(sql, paid, order_id, execute=True)
 
     async def delete_cart_item(self, cart_id, product_id):
         sql = "DELETE FROM Items WHERE cart_id=$1 AND product_id=$2;"
