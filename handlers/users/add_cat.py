@@ -3,8 +3,10 @@ from data.config import ADMINS
 from loader import dp, db, bot
 from aiogram.dispatcher import FSMContext
 from states.admin import AddCategory
+from keyboards.default.main import main_menu_markup
 
 
+@dp.message_handler(text="Kategoriya qo'shish", user_id=ADMINS)
 @dp.message_handler(text="/add_cat", user_id=ADMINS)
 async def add_cat_func(message: types.Message):
     await message.answer("Qo'shmoqchi bo'lgan kategoriya nomini kiriting")
@@ -35,6 +37,6 @@ async def get_cat_desc(message: types.Message, state: FSMContext):
     title = data.get("cat_title")
     desc = data.get("cat_desc")
     await db.add_cat(title=title, desc=desc, image_url=cat_image)
-    await message.answer("Kategoriyaning saqlandi!")
+    await message.answer("Kategoriyaning saqlandi!", reply_markup=main_menu_markup(str(message.from_user.id)))
     await state.finish()
 

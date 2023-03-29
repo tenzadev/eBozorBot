@@ -10,8 +10,10 @@ async def on_startup(dispatcher):
     # Ma'lumotlar bazasini yaratamiz:
     await db.create()
     # await db.drop_users()
-    await db.create_table_cats()
-    await db.create_table_products()
+    # await db.create_table_cats()
+    # await db.create_table_products()
+    await db.create_table_order()
+    await db.create_table_order_item()
 
     # Birlamchi komandalar (/start va /help)
     await set_default_commands(dispatcher)
