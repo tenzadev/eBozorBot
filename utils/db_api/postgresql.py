@@ -137,7 +137,7 @@ class Database:
     
     async def add_product(self, title, desc, image_url, price, cat_id):
         sql = "INSERT INTO Products (title, description, image_url, price, cat_id) VALUES($1, $2, $3, $4, $5) returning *"
-        return await self.execute(sql, title, desc, image_url,price, cat_id, fetchrow=True)
+        return await self.execute(sql, title, desc, image_url, price, cat_id, fetchrow=True)
     
     async def create_cart(self, user_id):
         sql = "INSERT INTO Carts (user_id) VALUES($1) returning *"

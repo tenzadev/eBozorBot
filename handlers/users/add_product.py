@@ -55,6 +55,7 @@ async def get_price(message: types.Message, state: FSMContext):
     title = data.get("prod_title")
     desc = data.get("prod_desc")
     image = data.get("prod_image_id")
-    await db.add_product(title=title, desc=desc, image_url=main_menu_markup(str(message.from_user.id)))
+    await db.add_product(title=title, desc=desc, image_url=image, price=price, cat_id=cat_id)
+    await message.answer(text="Mahsulot saqlandi", reply_markup=main_menu_markup(str(message.from_user.id)))
     await state.finish()
 
