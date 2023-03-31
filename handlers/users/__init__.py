@@ -1,5 +1,6 @@
 from . import start
 from . import help
+from . import check
 from . import admin
 from . import add_cat
 from . import add_product
